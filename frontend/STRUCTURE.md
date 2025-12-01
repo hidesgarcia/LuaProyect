@@ -1,0 +1,31 @@
+public/
+src/
+  components/
+    Navigation.js
+    CourseCard.js
+  pages/
+    Login.js
+    Register.js
+    Dashboard.js
+    Courses.js
+    CourseDetail.js
+    Quiz.js
+    Rankings.js
+    Forum.js
+    Chat.js
+  styles/
+    index.css
+    Auth.css
+    Dashboard.css
+    Courses.css
+    CourseDetail.css
+    Quiz.css
+    Rankings.css
+    Forum.css
+    Chat.css
+    Navigation.css
+    CourseCard.css
+  App.js
+  App.css
+  index.js
+package.json
