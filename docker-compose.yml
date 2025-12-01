@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongo:
+    image: mongo:5.0
+    container_name: khan-academy-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - khan-network
+
+  # Backend GraphQL Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: khan-academy-backend
+    environment:
+      MONGODB_URI: mongodb://root:password@mongo:27017/khan-academy?authSource=admin
+      JWT_SECRET: your-secret-key-here-change-in-production
+      PORT: 4000
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    networks:
+      - khan-network
+    volumes:
+      - ./backend/src:/app/src
+
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: khan-academy-frontend
+    environment:
+      REACT_APP_GRAPHQL_URL: http://localhost:4000/graphql
+      REACT_APP_WS_URL: ws://localhost:4000/graphql
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - khan-network
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+
+volumes:
+  mongo_data:
+
+networks:
+  khan-network:
+    driver: bridge
